@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VURA — Smart Civic Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f8fc;
+  --card:#ffffff;
+  --border:#e8edf5;
+  --text:#1a1f36;
+  --sub:#6b7280;
+  --green:#059669;
+  --green-light:#d1fae5;
+  --yellow:#d97706;
+  --yellow-light:#fef3c7;
+  --red:#dc2626;
+  --red-light:#fee2e2;
+  --blue:#2563eb;
+  --blue-light:#dbeafe;
+  --accent:#4f46e5;
+  --accent-light:#eef2ff;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh}
+
+/* ── HEADER ── */
+.header{
+  background:var(--accent);
+  padding:14px 24px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
+}
+.header h1{color:#fff;font-size:1.4rem;font-weight:900;letter-spacing:-.5px}
+.header p{color:rgba(255,255,255,.75);font-size:.7rem;margin-top:2px}
+.live-pill{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+  border-radius:999px;padding:4px 12px;color:#fff;font-size:.68rem;font-weight:600;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── LANG BAR ── */
+.lang-bar{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:8px 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.lang-bar span{font-size:.68rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.08em}
+.lb{
+  border:1px solid var(--border);border-radius:6px;
+  padding:4px 10px;font-size:.7rem;font-weight:600;color:var(--sub);
+  cursor:pointer;background:#fff;font-family:'Inter',sans-serif;transition:all .2s;
+}
+.lb:hover,.lb.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ── WRAPPER ── */
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:4px;margin-bottom:18px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content}
+.tab{
+  padding:7px 18px;border-radius:7px;font-size:.78rem;font-weight:600;
+  cursor:pointer;color:var(--sub);transition:all .2s;border:none;background:transparent;font-family:'Inter',sans-serif;
+}
+.tab.on{background:var(--accent);color:#fff}
+
+/* ── PAGES ── */
+.page{display:none}.page.on{display:block}
+
+/* ── ALERT ── */
+.alert{
+  display:none;align-items:center;gap:12px;
+  background:var(--red-light);border:1px solid #fca5a5;
+  border-radius:10px;padding:14px 18px;margin-bottom:16px;
+}
+.alert.show{display:flex}
+.alert strong{display:block;color:var(--red);font-size:.9rem}
+.alert span{font-size:.73rem;color:#991b1b}
+
+/* ── QUOTE ── */
+.quote{
+  background:var(--accent-light);border:1px solid #c7d2fe;
+  border-radius:10px;padding:13px 18px;margin-bottom:16px;
+  font-size:.85rem;color:var(--accent);font-style:italic;font-weight:500;text-align:center;
+}
+
+/* ── MAIN STAT ── */
+.main-stat{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:24px;margin-bottom:16px;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;
+}
+@media(max-width:600px){.main-stat{grid-template-columns:1fr}}
+
+.stat-block{text-align:center;padding:16px;border-radius:10px}
+.stat-block.green{background:var(--green-light)}
+.stat-block.red{background:var(--red-light)}
+.stat-block.blue{background:var(--blue-light)}
+
+.stat-num{font-size:2.8rem;font-weight:900;line-height:1;margin-bottom:6px}
+.stat-block.green .stat-num{color:var(--green)}
+.stat-block.red   .stat-num{color:var(--red)}
+.stat-block.blue  .stat-num{color:var(--blue)}
+.stat-lbl{font-size:.72rem;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.08em}
+.stat-sub{font-size:.7rem;color:var(--sub);margin-top:4px}
+
+/* ── SOCIAL PROOF ── */
+.social-proof{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:20px;margin-bottom:16px;
+}
+.sp-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--sub);margin-bottom:14px}
+.sp-bar-wrap{background:#f1f5f9;border-radius:999px;height:16px;margin-bottom:10px;overflow:hidden}
+.sp-bar{height:100%;border-radius:999px;background:var(--green);transition:width .8s ease;min-width:4px}
+.sp-numbers{display:flex;justify-content:space-between;font-size:.75rem;font-weight:600}
+.sp-good{color:var(--green)}.sp-bad{color:var(--red)}
+.sp-nudge{
+  margin-top:12px;padding:12px 14px;border-radius:8px;
+  background:var(--accent-light);border:1px solid #c7d2fe;
+  font-size:.82rem;font-weight:500;color:var(--accent);text-align:center;
+}
+
+/* ── NUDGE PANEL ── */
+.nudge-panel{
+  background:linear-gradient(135deg,#f0fdf4,#dcfce7);
+  border:1px solid #86efac;border-radius:14px;padding:20px;margin-bottom:16px;text-align:center;
+}
+.nudge-big{font-size:2.6rem;font-weight:900;color:var(--green);line-height:1;margin-bottom:4px}
+.nudge-lbl{font-size:.78rem;font-weight:600;color:#065f46;margin-bottom:8px}
+.nudge-sub{font-size:.73rem;color:#047857;line-height:1.6}
+
+/* ── CARDS ROW ── */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:560px){.row2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--sub);margin-bottom:14px}
+
+/* ── RULES ── */
+.rule{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.rule:last-child{border-bottom:none}
+.rule-icon{font-size:1rem;width:24px;text-align:center}
+.rule-text{flex:1;font-size:.8rem;font-weight:500}
+.badge{font-size:.6rem;font-weight:700;padding:3px 8px;border-radius:999px}
+.b-green{background:var(--green-light);color:var(--green)}
+.b-red{background:var(--red-light);color:var(--red)}
+.b-blue{background:var(--blue-light);color:var(--blue)}
+.b-gray{background:#f1f5f9;color:var(--sub)}
+
+/* ── HEATMAP PAGE ── */
+.heatmap-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.hm-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--sub);margin-bottom:10px}
+.hm-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.hm-dot{width:11px;height:11px;border-radius:50%;display:inline-block;margin-right:5px}
+.hm-legend span{font-size:.7rem;color:var(--sub);display:flex;align-items:center}
+.stops-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.stop{border-radius:8px;padding:12px 14px;border:1px solid transparent;cursor:default;transition:transform .15s}
+.stop:hover{transform:translateY(-2px)}
+.stop.red{background:var(--red-light);border-color:#fca5a5}
+.stop.yellow{background:var(--yellow-light);border-color:#fde68a}
+.stop.green{background:var(--green-light);border-color:#86efac}
+.stop-name{font-size:.78rem;font-weight:700;margin-bottom:4px}
+.stop.red .stop-name{color:#991b1b}
+.stop.yellow .stop-name{color:#92400e}
+.stop.green .stop-name{color:#065f46}
+.stop-score{font-size:1.4rem;font-weight:900}
+.stop.red .stop-score{color:var(--red)}
+.stop.yellow .stop-score{color:var(--yellow)}
+.stop.green .stop-score{color:var(--green)}
+.stop-lbl{font-size:.62rem;font-weight:600;margin-top:2px}
+.stop.red .stop-lbl{color:#b91c1c}
+.stop.yellow .stop-lbl{color:#b45309}
+.stop.green .stop-lbl{color:#047857}
+
+/* ── VOICE BTN ── */
+.voice-bar{
+  background:#fff;border:1px solid var(--border);border-radius:10px;
+  padding:10px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+.voice-info{font-size:.75rem;color:var(--sub)}
+.voice-info strong{color:var(--text);display:block;font-size:.82rem;margin-bottom:2px}
+.voice-toggle{
+  display:flex;align-items:center;gap:8px;
+  background:var(--accent);color:#fff;border:none;border-radius:8px;
+  padding:7px 14px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+}
+
+/* ── FOOTER ── */
+footer{text-align:center;font-size:.62rem;color:var(--sub);padding-top:16px;border-top:1px solid var(--border);margin-top:8px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>VURA</h1>
+    <p id="tagline">Virtuous Urban Resilience Assistance · Smart Civic Monitor</p>
+  </div>
+  <div class="live-pill"><span class="dot"></span><span id="live-txt">LIVE</span></div>
+</div>
+
+<!-- LANG BAR -->
+<div class="lang-bar">
+  <span id="lang-lbl">Language</span>
+  <button class="lb on"  onclick="setLang('en',this)">English</button>
+  <button class="lb" onclick="setLang('hi',this)">हिन्दी</button>
+  <button class="lb" onclick="setLang('te',this)">తెలుగు</button>
+  <button class="lb" onclick="setLang('kn',this)">ಕನ್ನಡ</button>
+  <button class="lb" onclick="setLang('ta',this)">தமிழ்</button>
+  <button class="lb" onclick="setLang('ml',this)">മലയാളം</button>
+</div>
+
+<div class="wrap">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('live',this)" id="tab-live">📍 Live Monitor</button>
+    <button class="tab"    onclick="showTab('heatmap',this)" id="tab-heatmap">🗺️ City Heatmap</button>
+    <button class="tab"    onclick="showTab('score',this)" id="tab-score">🏆 Civic Score</button>
+  </div>
+
+  <!-- ── LIVE PAGE ── -->
+  <div class="page on" id="page-live">
+
+    <!-- QUOTE -->
+    <div class="quote" id="quote">"A queue is not a constraint — it is a gift of time you give to everyone, including yourself."</div>
+
+    <!-- ALERT -->
+    <div class="alert" id="alert">
+      <div style="font-size:1.4rem">⚠️</div>
+      <div><strong id="alert-title">Chaotic Crowding Detected</strong><span id="alert-sub">Please form a queue — save time for yourself and everyone here.</span></div>
+    </div>
+
+    <!-- VOICE BAR -->
+    <div class="voice-bar">
+      <div class="voice-info">
+        <strong id="voice-heading">🔊 Voice Nudge</strong>
+        <span id="voice-desc">Speaks when chaos detected. Plays once every 2 minutes.</span>
+      </div>
+      <button class="voice-toggle" onclick="toggleVoice()" id="voice-btn">🔊 Voice ON</button>
+    </div>
+
+    <!-- MAIN STATS -->
+    <div class="main-stat">
+      <div class="stat-block blue">
+        <div class="stat-num" id="people-num">—</div>
+        <div class="stat-lbl" id="lbl-people">People Detected</div>
+        <div class="stat-sub" id="people-status">—</div>
+      </div>
+      <div class="stat-block green">
+        <div class="stat-num" id="time-num">0</div>
+        <div class="stat-lbl" id="lbl-time">Minutes Saved</div>
+        <div class="stat-sub" id="lbl-timesub">By queuing at this stop</div>
+      </div>
+      <div class="stat-block" id="queue-block">
+        <div class="stat-num" id="queue-status-num">—</div>
+        <div class="stat-lbl" id="lbl-qstatus">Queue Status</div>
+        <div class="stat-sub" id="queue-sub">—</div>
+      </div>
+    </div>
+
+    <!-- SOCIAL PROOF -->
+    <div class="social-proof">
+      <div class="sp-title" id="lbl-sp">Social Proof — Who Is Queuing Right Now?</div>
+      <div class="sp-bar-wrap"><div class="sp-bar" id="sp-bar" style="width:0%"></div></div>
+      <div class="sp-numbers">
+        <span class="sp-good" id="sp-good">0 queuing</span>
+        <span class="sp-bad"  id="sp-bad">0 not queuing</span>
+      </div>
+      <div class="sp-nudge" id="sp-nudge">Waiting for camera data...</div>
+    </div>
+
+    <!-- NUDGE PANEL -->
+    <div class="nudge-panel">
+      <div class="nudge-big">24 min</div>
+      <div class="nudge-lbl" id="lbl-nudge">saved across a 12-stop route when you queue</div>
+      <div class="nudge-sub" id="nudge-sub">
+        2 minutes saved per person · per stop · every single day.<br>
+        When 90% of people queue, <strong>everyone boards faster.</strong><br>
+        Be the change. Start the queue.
+      </div>
+    </div>
+
+    <!-- RULES + DATE -->
+    <div class="row2">
+      <div class="card">
+        <div class="card-title" id="lbl-rules">Civic Rules Tracker</div>
+        <div class="rule"><div class="rule-icon">🚶</div><div class="rule-text" id="r-queue">Queue Formation</div><div class="badge" id="b-queue">CHECKING</div></div>
+        <div class="rule"><div class="rule-icon">🚮</div><div class="rule-text" id="r-litter">No Littering</div><div class="badge b-blue">MONITORED</div></div>
+        <div class="rule"><div class="rule-icon">🚦</div><div class="rule-text" id="r-traffic">Traffic Discipline</div><div class="badge b-blue">OBSERVED</div></div>
+        <div class="rule"><div class="rule-icon">♿</div><div class="rule-text" id="r-elderly">Priority for Elderly</div><div class="badge b-gray">MANUAL</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title" id="lbl-info">Session Info</div>
+        <div style="font-size:1.1rem;font-weight:800;color:var(--accent);margin-bottom:4px" id="today-date">—</div>
+        <div style="font-size:.75rem;color:var(--sub);margin-bottom:16px" id="lbl-location">Hyderabad, Telangana</div>
+        <div style="font-size:.72rem;color:var(--sub)" id="timestamp">—</div>
+      </div>
+    </div>
+
+  </div><!-- end live page -->
+
+  <!-- ── HEATMAP PAGE ── -->
+  <div class="page" id="page-heatmap">
+    <div class="heatmap-section">
+      <div class="hm-title" id="hm-title">City Heatmap — Hyderabad Bus Stops</div>
+      <div class="hm-legend">
+        <span><span class="hm-dot" style="background:#dc2626"></span><span id="leg-red">Poor civic sense (&lt;50)</span></span>
+        <span><span class="hm-dot" style="background:#d97706"></span><span id="leg-yellow">Moderate (50–70)</span></span>
+        <span><span class="hm-dot" style="background:#059669"></span><span id="leg-green">Good civic sense (&gt;70)</span></span>
+      </div>
+      <div class="stops-grid" id="stops-grid">Loading...</div>
+    </div>
+  </div>
+
+  <!-- ── SCORE PAGE ── -->
+  <div class="page" id="page-score">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" id="lbl-score-title">Civic Score — Camera Location (Live)</div>
+      <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:16px">
+        <div style="text-align:center">
+          <div style="font-size:3.5rem;font-weight:900" id="score-big">—</div>
+          <div style="font-size:.7rem;color:var(--sub);font-weight:600">/100</div>
+        </div>
+        <div>
+          <div style="font-size:1.1rem;font-weight:700;margin-bottom:6px" id="score-grade">—</div>
+          <div style="font-size:.75rem;color:var(--sub);max-width:320px;line-height:1.6" id="score-desc">
+            This score reflects how well people at this location are following civic norms. Every queue formed raises it. Every chaotic crowd lowers it. Pass mark: 50/100.
+          </div>
+        </div>
+      </div>
+      <div style="font-size:.72rem;color:var(--sub);font-style:italic" id="score-collective">
+        "This is not your score alone. It is the collective score of everyone at this location. Be the reason it goes up."
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" id="lbl-what-helps">What Raises the Score?</div>
+      <div class="rule"><div class="rule-icon">✅</div><div class="rule-text" id="sh1">Forming an orderly queue</div><div class="badge b-green">+0.05 / 8 sec</div></div>
+      <div class="rule"><div class="rule-icon">❌</div><div class="rule-text" id="sh2">Chaotic crowding without queue</div><div class="badge b-red">-0.08 / 8 sec</div></div>
+      <div class="rule"><div class="rule-icon">🏆</div><div class="rule-text" id="sh3">Score above 70 = Good standing</div><div class="badge b-green">GOAL</div></div>
+      <div class="rule"><div class="rule-icon">⚠️</div><div class="rule-text" id="sh4">Score below 50 = Authority alert</div><div class="badge b-red">ACTION NEEDED</div></div>
+    </div>
+  </div>
+
+  <footer>VURA · Team SCRITHM · Stanley College of Engineering, Hyderabad · <span id="ft-time">—</span></footer>
+</div>
+
+<script>
+// ── TRANSLATIONS ──────────────────────────────
+const T = {
+  en:{
+    tagline:"Virtuous Urban Resilience Assistance · Smart Civic Monitor",
+    live:"LIVE", langLbl:"Language",
+    quote:'"A queue is not a constraint — it is a gift of time you give to everyone, including yourself."',
+    alertTitle:"Chaotic Crowding Detected",
+    alertSub:"Please form a queue — save time for yourself and everyone here.",
+    voiceHead:"🔊 Voice Nudge", voiceDesc:"Speaks when chaos detected. Plays once every 2 minutes.",
+    tabLive:"📍 Live Monitor", tabHeatmap:"🗺️ City Heatmap", tabScore:"🏆 Civic Score",
+    people:"People Detected", time:"Minutes Saved", timeSub:"By queuing at this stop",
+    qStatus:"Queue Status",
+    sp:"Social Proof — Who Is Queuing Right Now?",
+    nudgeLbl:"saved across a 12-stop route when you queue",
+    nudgeSub:"2 minutes saved per person · per stop · every single day.<br>When 90% of people queue, <strong>everyone boards faster.</strong><br>Be the change. Start the queue.",
+    rules:"Civic Rules Tracker",
+    rQueue:"Queue Formation", rLitter:"No Littering", rTraffic:"Traffic Discipline", rElderly:"Priority for Elderly",
+    info:"Session Info", location:"Hyderabad, Telangana",
+    hm:"City Heatmap — Hyderabad Bus Stops",
+    legRed:"Poor civic sense (<50)", legYellow:"Moderate (50–70)", legGreen:"Good civic sense (>70)",
+    scoreTitle:"Civic Score — Camera Location (Live)",
+    scoreDesc:"This score reflects how well people at this location are following civic norms. Every queue formed raises it. Every chaotic crowd lowers it. Pass mark: 50/100.",
+    scoreCollective:'"This is not your score alone. It is the collective score of everyone at this location. Be the reason it goes up."',
+    whatHelps:"What Raises the Score?",
+    sh1:"Forming an orderly queue", sh2:"Chaotic crowding without queue",
+    sh3:"Score above 70 = Good standing", sh4:"Score below 50 = Authority alert",
+    grades:{A:"🏆 Excellent",B:"✅ Good",C:"⚠️ Average",D:"❌ Poor"},
+    poor:"Poor", moderate:"Moderate", good:"Good",
+    statuses:{QUEUE:"✅ Queue Forming",CHAOTIC:"❌ Chaotic",EMPTY:"— No one here"},
+    spNudge:(q,t) => q > 0
+      ? `${q} out of ${t} people are queuing. Join them — save ${q*2} minutes!`
+      : `No queue detected. Be the first to start one.`,
+    voiceMsg:(q,t) => q > 0
+      ? `${q} out of ${t} people are already queuing. Please join the queue. You will save ${q*2} minutes.`
+      : `Please form a queue. It saves everyone time.`,
+  },
+  hi:{
+    tagline:"वर्चुअस अर्बन रेज़िलिएंस · स्मार्ट सिविक मॉनिटर",
+    live:"लाइव", langLbl:"भाषा",
+    quote:'"कतार एक बाधा नहीं — यह वह समय का उपहार है जो आप सभी को देते हैं।"',
+    alertTitle:"अनियंत्रित भीड़ मिली", alertSub:"कृपया कतार बनाएं — आप और सभी का समय बचेगा।",
+    voiceHead:"🔊 आवाज़ सूचना", voiceDesc:"अव्यवस्था मिलने पर बोलता है। हर 2 मिनट में एक बार।",
+    tabLive:"📍 लाइव मॉनिटर", tabHeatmap:"🗺️ शहर हीटमैप", tabScore:"🏆 नागरिक स्कोर",
+    people:"उपस्थित लोग", time:"बचाए गए मिनट", timeSub:"इस स्टॉप पर कतार से",
+    qStatus:"कतार स्थिति",
+    sp:"सामाजिक प्रमाण — अभी कौन कतार में है?",
+    nudgeLbl:"12 स्टॉप के रूट में बचत, जब आप कतार में हों",
+    nudgeSub:"प्रति व्यक्ति 2 मिनट · प्रति स्टॉप · हर दिन।<br>जब 90% कतार में हों — <strong>सभी तेज़ी से चढ़ते हैं।</strong>",
+    rules:"नागरिक नियम ट्रैकर",
+    rQueue:"कतार निर्माण", rLitter:"कूड़ा न फेंकें", rTraffic:"यातायात अनुशासन", rElderly:"बुजुर्गों को प्राथमिकता",
+    info:"सत्र जानकारी", location:"हैदराबाद, तेलंगाना",
+    hm:"शहर हीटमैप — हैदराबाद बस स्टॉप",
+    legRed:"खराब नागरिक भावना (<50)", legYellow:"मध्यम (50–70)", legGreen:"अच्छी नागरिक भावना (>70)",
+    scoreTitle:"नागरिक स्कोर — कैमरा स्थान (लाइव)",
+    scoreDesc:"यह स्कोर दर्शाता है कि यहाँ लोग नागरिक नियमों का कितना पालन कर रहे हैं। पास मार्क: 50/100।",
+    scoreCollective:'"यह केवल आपका स्कोर नहीं है। यह यहाँ सभी का सामूहिक स्कोर है।"',
+    whatHelps:"स्कोर क्या बढ़ाता है?",
+    sh1:"व्यवस्थित कतार बनाना", sh2:"कतार के बिना भीड़भाड़",
+    sh3:"70 से ऊपर स्कोर = अच्छी स्थिति", sh4:"50 से नीचे = प्राधिकरण सूचना",
+    grades:{A:"🏆 उत्कृष्ट",B:"✅ अच्छा",C:"⚠️ औसत",D:"❌ खराब"},
+    poor:"खराब", moderate:"मध्यम", good:"अच्छा",
+    statuses:{QUEUE:"✅ कतार बन रही है",CHAOTIC:"❌ अव्यवस्थित",EMPTY:"— कोई नहीं"},
+    spNudge:(q,t) => q > 0 ? `${t} में से ${q} लोग कतार में हैं। आप भी जुड़ें!` : `कोई कतार नहीं। पहले बनें।`,
+    voiceMsg:(q,t) => q > 0 ? `${t} में से ${q} लोग पहले से कतार में हैं। कृपया कतार में शामिल हों।` : `कृपया कतार बनाएं।`,
+  },
+  te:{
+    tagline:"వర్చుయస్ అర్బన్ రెసిలియన్స్ · స్మార్ట్ సివిక్ మానిటర్",
+    live:"లైవ్", langLbl:"భాష",
+    quote:'"వరుస ఒక అవరోధం కాదు — అది మీరు అందరికీ ఇచ్చే సమయ బహుమతి."',
+    alertTitle:"గందరగోళ జనసమ్మర్దం గుర్తించబడింది", alertSub:"దయచేసి వరుసలో నిల్చోండి — అందరి సమయం ఆదా అవుతుంది.",
+    voiceHead:"🔊 వాయిస్ నడ్జ్", voiceDesc:"గందరగోళం గుర్తించినప్పుడు మాట్లాడుతుంది. 2 నిమిషాలకు ఒకసారి.",
+    tabLive:"📍 లైవ్ మానిటర్", tabHeatmap:"🗺️ సిటీ హీట్‌మ్యాప్", tabScore:"🏆 సివిక్ స్కోర్",
+    people:"గుర్తించిన వ్యక్తులు", time:"ఆదా చేసిన నిమిషాలు", timeSub:"ఈ స్టాప్‌లో వరుసలో నిల్చోవడం వల్ల",
+    qStatus:"వరుస స్థితి",
+    sp:"సామాజిక రుజువు — ఇప్పుడు ఎవరు వరుసలో ఉన్నారు?",
+    nudgeLbl:"12 స్టాప్‌ల రూట్‌లో వరుసలో నిల్చుంటే ఆదా",
+    nudgeSub:"ప్రతి వ్యక్తికి 2 నిమిషాలు · ప్రతి స్టాప్ · ప్రతి రోజు.<br>90% వరుసలో ఉంటే <strong>అందరూ వేగంగా ఎక్కుతారు.</strong>",
+    rules:"సివిక్ నియమాల ట్రాకర్",
+    rQueue:"వరుస నిర్మాణం", rLitter:"చెత్త వేయవద్దు", rTraffic:"ట్రాఫిక్ క్రమశిక్షణ", rElderly:"వృద్ధులకు ప్రాధాన్యత",
+    info:"సెషన్ సమాచారం", location:"హైదరాబాద్, తెలంగాణ",
+    hm:"సిటీ హీట్‌మ్యాప్ — హైదరాబాద్ బస్ స్టాప్‌లు",
+    legRed:"పేద సివిక్ సెన్స్ (<50)", legYellow:"మధ్యస్థం (50–70)", legGreen:"మంచి సివిక్ సెన్స్ (>70)",
+    scoreTitle:"సివిక్ స్కోర్ — కెమెరా లొకేషన్ (లైవ్)",
+    scoreDesc:"ఈ స్కోర్ ఇక్కడ ప్రజలు సివిక్ నియమాలను ఎంత బాగా పాటిస్తున్నారో చూపిస్తుంది. పాస్ మార్క్: 50/100.",
+    scoreCollective:'"ఇది మీ స్కోర్ మాత్రమే కాదు. ఇక్కడ అందరి సమిష్టి స్కోర్ ఇది."',
+    whatHelps:"స్కోర్‌ని ఏది పెంచుతుంది?",
+    sh1:"క్రమంగా వరుసలో నిల్చోవడం", sh2:"వరుస లేకుండా గందరగోళం",
+    sh3:"70 పైన స్కోర్ = మంచి స్థితి", sh4:"50 కింద = అధికారి హెచ్చరిక",
+    grades:{A:"🏆 అద్భుతం",B:"✅ మంచిది",C:"⚠️ సగటు",D:"❌ పేలవం"},
+    poor:"పేద", moderate:"మధ్యస్థం", good:"మంచిది",
+    statuses:{QUEUE:"✅ వరుస ఏర్పడుతోంది",CHAOTIC:"❌ గందరగోళం",EMPTY:"— ఎవరూ లేరు"},
+    spNudge:(q,t) => q > 0 ? `${t} మందిలో ${q} మంది వరుసలో ఉన్నారు. మీరూ చేరండి!` : `వరుస లేదు. మొదట మీరు మొదలుపెట్టండి.`,
+    voiceMsg:(q,t) => q > 0 ? `${t} మందిలో ${q} మంది ఇప్పటికే వరుసలో ఉన్నారు. దయచేసి వరుసలో చేరండి.` : `దయచేసి వరుస ఏర్పరచండి.`,
+  },
+  kn:{
+    tagline:"ವರ್ಚ್ಯುಯಸ್ ಅರ್ಬನ್ ರೆಸಿಲಿಯನ್ಸ್ · ಸ್ಮಾರ್ಟ್ ಸಿವಿಕ್ ಮಾನಿಟರ್",
+    live:"ಲೈವ್", langLbl:"ಭಾಷೆ",
+    quote:'"ಸಾಲು ನಿರ್ಬಂಧವಲ್ಲ — ಅದು ನೀವು ಎಲ್ಲರಿಗೂ ನೀಡುವ ಸಮಯದ ಕೊಡುಗೆ."',
+    alertTitle:"ಅವ್ಯವಸ್ಥಿತ ಜನಸಂದಣಿ ಪತ್ತೆ", alertSub:"ದಯವಿಟ್ಟು ಸಾಲಿನಲ್ಲಿ ನಿಲ್ಲಿ.",
+    voiceHead:"🔊 ಧ್ವನಿ ಸೂಚನೆ", voiceDesc:"ಅವ್ಯವಸ್ಥೆ ಕಂಡಾಗ ಮಾತನಾಡುತ್ತದೆ.",
+    tabLive:"📍 ಲೈವ್ ಮಾನಿಟರ್", tabHeatmap:"🗺️ ನಗರ ಹೀಟ್‌ಮ್ಯಾಪ್", tabScore:"🏆 ನಾಗರಿಕ ಸ್ಕೋರ್",
+    people:"ಪತ್ತೆಯಾದ ಜನರು", time:"ಉಳಿತಾಯ ನಿಮಿಷಗಳು", timeSub:"ಈ ನಿಲ್ದಾಣದಲ್ಲಿ ಸಾಲಿನಲ್ಲಿ ನಿಂತು",
+    qStatus:"ಸಾಲಿನ ಸ್ಥಿತಿ",
+    sp:"ಸಾಮಾಜಿಕ ಪ್ರಮಾಣ — ಈಗ ಯಾರು ಸಾಲಿನಲ್ಲಿದ್ದಾರೆ?",
+    nudgeLbl:"ಸಾಲಿನಲ್ಲಿ ನಿಂತಾಗ 12 ನಿಲ್ದಾಣ ರೂಟ್‌ನಲ್ಲಿ ಉಳಿತಾಯ",
+    nudgeSub:"ಪ್ರತಿ ವ್ಯಕ್ತಿಗೆ 2 ನಿಮಿಷ · ಪ್ರತಿ ನಿಲ್ದಾಣ.<br>90% ಸಾಲಿನಲ್ಲಿದ್ದರೆ <strong>ಎಲ್ಲರೂ ವೇಗವಾಗಿ ಹತ್ತುತ್ತಾರೆ.</strong>",
+    rules:"ನಾಗರಿಕ ನಿಯಮ ಟ್ರ್ಯಾಕರ್",
+    rQueue:"ಸಾಲು ನಿರ್ಮಾಣ", rLitter:"ಕಸ ಹಾಕಬೇಡಿ", rTraffic:"ಸಂಚಾರ ಶಿಸ್ತು", rElderly:"ಹಿರಿಯರಿಗೆ ಆದ್ಯತೆ",
+    info:"ಸೆಷನ್ ಮಾಹಿತಿ", location:"ಹೈದರಾಬಾದ್, ತೆಲಂಗಾಣ",
+    hm:"ನಗರ ಹೀಟ್‌ಮ್ಯಾಪ್ — ಹೈದರಾಬಾದ್ ಬಸ್ ನಿಲ್ದಾಣಗಳು",
+    legRed:"ಕಳಪೆ ನಾಗರಿಕ ಪ್ರಜ್ಞೆ (<50)", legYellow:"ಮಧ್ಯಮ (50–70)", legGreen:"ಉತ್ತಮ ನಾಗರಿಕ ಪ್ರಜ್ಞೆ (>70)",
+    scoreTitle:"ನಾಗರಿಕ ಸ್ಕೋರ್ — ಕ್ಯಾಮೆರಾ ಸ್ಥಳ (ಲೈವ್)",
+    scoreDesc:"ಈ ಸ್ಕೋರ್ ಇಲ್ಲಿ ಜನರು ನಾಗರಿಕ ನಿಯಮಗಳನ್ನು ಎಷ್ಟು ಚೆನ್ನಾಗಿ ಪಾಲಿಸುತ್ತಿದ್ದಾರೆ ಎಂಬುದನ್ನು ತೋರಿಸುತ್ತದೆ.",
+    scoreCollective:'"ಇದು ನಿಮ್ಮ ಸ್ಕೋರ್ ಮಾತ್ರವಲ್ಲ. ಇಲ್ಲಿ ಎಲ್ಲರ ಸಾಮೂಹಿಕ ಸ್ಕೋರ್."',
+    whatHelps:"ಸ್ಕೋರ್ ಏನು ಹೆಚ್ಚಿಸುತ್ತದೆ?",
+    sh1:"ಶಿಸ್ತಿನ ಸಾಲು ನಿರ್ಮಿಸುವುದು", sh2:"ಸಾಲು ಇಲ್ಲದ ಗದ್ದಲ",
+    sh3:"70 ಮೇಲೆ = ಉತ್ತಮ", sh4:"50 ಕೆಳಗೆ = ಕ್ರಮ ಅಗತ್ಯ",
+    grades:{A:"🏆 ಅತ್ಯುತ್ತಮ",B:"✅ ಉತ್ತಮ",C:"⚠️ ಸರಾಸರಿ",D:"❌ ಕಳಪೆ"},
+    poor:"ಕಳಪೆ", moderate:"ಮಧ್ಯಮ", good:"ಉತ್ತಮ",
+    statuses:{QUEUE:"✅ ಸಾಲು ಏರ್ಪಡುತ್ತಿದೆ",CHAOTIC:"❌ ಗದ್ದಲ",EMPTY:"— ಯಾರೂ ಇಲ್ಲ"},
+    spNudge:(q,t) => q > 0 ? `${t} ರಲ್ಲಿ ${q} ಜನ ಸಾಲಿನಲ್ಲಿದ್ದಾರೆ. ನೀವೂ ಸೇರಿ!` : `ಸಾಲು ಇಲ್ಲ. ಮೊದಲು ಪ್ರಾರಂಭಿಸಿ.`,
+    voiceMsg:(q,t) => q > 0 ? `${t} ರಲ್ಲಿ ${q} ಜನ ಈಗಾಗಲೇ ಸಾಲಿನಲ್ಲಿದ್ದಾರೆ. ದಯವಿಟ್ಟು ಸೇರಿ.` : `ದಯವಿಟ್ಟು ಸಾಲು ನಿರ್ಮಿಸಿ.`,
+  },
+  ta:{
+    tagline:"வர்ச்சுயஸ் அர்பன் ரெசிலியன்ஸ் · ஸ்மார்ட் சிவிக் மானிட்டர்",
+    live:"நேரடி", langLbl:"மொழி",
+    quote:'"வரிசை ஒரு தடை அல்ல — நீங்கள் அனைவருக்கும் கொடுக்கும் நேர பரிசு."',
+    alertTitle:"கூட்ட குழப்பம் கண்டறியப்பட்டது", alertSub:"தயவுசெய்து வரிசையில் நில்லுங்கள்.",
+    voiceHead:"🔊 குரல் தூண்டல்", voiceDesc:"குழப்பம் கண்டால் பேசுகிறது.",
+    tabLive:"📍 நேரடி", tabHeatmap:"🗺️ வெப்பவரைபடம்", tabScore:"🏆 குடிமை மதிப்பெண்",
+    people:"கண்டறிந்த மக்கள்", time:"மிச்சமான நிமிடங்கள்", timeSub:"இந்த நிறுத்தத்தில் வரிசையில் நின்று",
+    qStatus:"வரிசை நிலை",
+    sp:"சமூக ஆதாரம் — இப்போது யார் வரிசையில் இருக்கிறார்கள்?",
+    nudgeLbl:"வரிசையில் நின்றால் 12 நிறுத்த பாதையில் மிச்சம்",
+    nudgeSub:"ஒவ்வொருவருக்கும் 2 நிமிடம் · ஒவ்வொரு நிறுத்தம்.<br>90% வரிசையில் இருந்தால் <strong>அனைவரும் வேகமாக ஏறுவார்கள்.</strong>",
+    rules:"குடிமை விதிகள் கண்காணிப்பு",
+    rQueue:"வரிசை அமைப்பு", rLitter:"குப்பை போடாதீர்கள்", rTraffic:"போக்குவரத்து ஒழுங்கு", rElderly:"முதியோருக்கு முன்னுரிமை",
+    info:"அமர்வு தகவல்", location:"ஹைதராபாத், தெலங்கானா",
+    hm:"நகர வெப்பவரைபடம் — ஹைதராபாத் பேருந்து நிறுத்தங்கள்",
+    legRed:"மோசமான குடிமை உணர்வு (<50)", legYellow:"நடுத்தரம் (50–70)", legGreen:"நல்ல குடிமை உணர்வு (>70)",
+    scoreTitle:"குடிமை மதிப்பெண் — நேரடி",
+    scoreDesc:"இந்த மதிப்பெண் இங்குள்ளவர்கள் விதிகளை எவ்வளவு பின்பற்றுகிறார்கள் என்பதை காட்டுகிறது.",
+    scoreCollective:'"இது உங்கள் மட்டுமான மதிப்பெண் அல்ல. இங்குள்ள அனைவரின் கூட்டு மதிப்பெண்."',
+    whatHelps:"மதிப்பெண்ணை எது உயர்த்துகிறது?",
+    sh1:"ஒழுங்கான வரிசை அமைப்பு", sh2:"வரிசை இல்லாத குழப்பம்",
+    sh3:"70+ மதிப்பெண் = நல்ல நிலை", sh4:"50 கீழே = அதிகாரி நடவடிக்கை",
+    grades:{A:"🏆 சிறப்பு",B:"✅ நல்லது",C:"⚠️ சராசரி",D:"❌ மோசம்"},
+    poor:"மோசம்", moderate:"நடுத்தரம்", good:"நல்லது",
+    statuses:{QUEUE:"✅ வரிசை உருவாகிறது",CHAOTIC:"❌ குழப்பம்",EMPTY:"— யாரும் இல்லை"},
+    spNudge:(q,t) => q > 0 ? `${t} பேரில் ${q} பேர் வரிசையில் உள்ளனர். நீங்களும் சேருங்கள்!` : `வரிசை இல்லை. முதலில் தொடங்குங்கள்.`,
+    voiceMsg:(q,t) => q > 0 ? `${t} பேரில் ${q} பேர் ஏற்கனவே வரிசையில் உள்ளனர். தயவுசெய்து சேருங்கள்.` : `தயவுசெய்து வரிசையில் நில்லுங்கள்.`,
+  },
+  ml:{
+    tagline:"വർച്ച്വസ് അർബൻ റെസിലിയൻസ് · സ്മാർട്ട് സിവിക് മോണിറ്റർ",
+    live:"തൽസമയം", langLbl:"ഭാഷ",
+    quote:'"ക്യൂ ഒരു തടസ്സമല്ല — അത് നിങ്ങൾ എല്ലാവർക്കും നൽകുന്ന സമയ സമ്മാനമാണ്."',
+    alertTitle:"അനിയന്ത്രിത തിരക്ക് കണ്ടെത്തി", alertSub:"ദയവായി ക്യൂ നിൽക്കൂ.",
+    voiceHead:"🔊 ശബ്ദ നിർദ്ദേശം", voiceDesc:"അക്രമം കണ്ടാൽ സംസാരിക്കും.",
+    tabLive:"📍 തൽസമയം", tabHeatmap:"🗺️ ഹീറ്റ്മാപ്പ്", tabScore:"🏆 പൗര സ്കോർ",
+    people:"കണ്ടെത്തിയ ആളുകൾ", time:"ലാഭിച്ച മിനിറ്റുകൾ", timeSub:"ഈ സ്റ്റോപ്പിൽ ക്യൂ നിൽക്കുന്നതിലൂടെ",
+    qStatus:"ക്യൂ സ്ഥിതി",
+    sp:"സാമൂഹ്യ തെളിവ് — ഇപ്പോൾ ആർ ക്യൂ നിൽക്കുന്നു?",
+    nudgeLbl:"ക്യൂ നിൽക്കുമ്പോൾ 12 സ്റ്റോപ്പ് റൂട്ടിൽ ലാഭം",
+    nudgeSub:"ഒരാൾക്ക് 2 മിനിറ്റ് · ഓരോ സ്റ്റോപ്പിലും.<br>90% ക്യൂ നിൽക്കുമ്പോൾ <strong>എല്ലാവരും വേഗം കയറും.</strong>",
+    rules:"പൗര നിയമ ട്രാക്കർ",
+    rQueue:"ക്യൂ രൂപീകരണം", rLitter:"മാലിന്യം ഇടരുത്", rTraffic:"ഗതാഗത അച്ചടക്കം", rElderly:"മുതിർന്നവർക്ക് മുൻഗണന",
+    info:"സെഷൻ വിവരം", location:"ഹൈദരാബാദ്, തെലങ്കാന",
+    hm:"സിറ്റി ഹീറ്റ്മാപ്പ് — ഹൈദരാബാദ് ബസ് സ്റ്റോപ്പുകൾ",
+    legRed:"മോശം പൗര ബോധം (<50)", legYellow:"ശരാശരി (50–70)", legGreen:"നല്ല പൗര ബോധം (>70)",
+    scoreTitle:"പൗര സ്കോർ — ക്യാമറ സ്ഥലം (തൽസമയം)",
+    scoreDesc:"ഇവിടുത്തെ ആളുകൾ നിയമങ്ങൾ എത്ര നന്നായി പാലിക്കുന്നു എന്ന് ഈ സ്കോർ കാട്ടുന്നു.",
+    scoreCollective:'"ഇത് നിങ്ങളുടെ മാത്രം സ്കോർ അല്ല. ഇവിടുത്തെ എല്ലാവരുടെയും കൂട്ടായ സ്കോർ."',
+    whatHelps:"സ്കോർ എന്ത് ഉയർത്തുന്നു?",
+    sh1:"ക്രമമായ ക്യൂ രൂപീകരണം", sh2:"ക്യൂ ഇല്ലാത്ത ആൾക്കൂട്ടം",
+    sh3:"70+ സ്കോർ = നല്ല നില", sh4:"50 താഴെ = അധികൃത നടപടി",
+    grades:{A:"🏆 മികച്ചത്",B:"✅ നല്ലത്",C:"⚠️ ശരാശരി",D:"❌ മോശം"},
+    poor:"മോശം", moderate:"ശരാശരി", good:"നല്ലത്",
+    statuses:{QUEUE:"✅ ക്യൂ ഉണ്ടാകുന്നു",CHAOTIC:"❌ ആൾക്കൂട്ടം",EMPTY:"— ആരുമില്ല"},
+    spNudge:(q,t) => q > 0 ? `${t} ൽ ${q} പേർ ക്യൂ നിൽക്കുന്നു. നിങ്ങളും ചേരൂ!` : `ക്യൂ ഇല്ല. ആദ്യം തുടങ്ങൂ.`,
+    voiceMsg:(q,t) => q > 0 ? `${t} ൽ ${q} പേർ ഇതിനകം ക്യൂ നിൽക്കുന്നു. ദയവായി ചേരൂ.` : `ദയവായി ഒരു ക്യൂ ഉണ്ടാക്കൂ.`,
+  },
+};
+
+let lang = 'en';
+let voiceOn = true;
+let lastVoiceTime = 0;
+let lastData = null;
+const VOICE_COOLDOWN = 120000; // 2 minutes
+
+function setLang(l, btn) {
+  lang = l;
+  document.querySelectorAll('.lb').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  if (lastData) render(lastData);
+}
+
+function showTab(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('page-' + id).classList.add('on');
+  btn.classList.add('on');
+}
+
+function toggleVoice() {
+  voiceOn = !voiceOn;
+  document.getElementById('voice-btn').textContent = voiceOn ? '🔊 Voice ON' : '🔇 Voice OFF';
+}
+
+function speak(text) {
+  if (!voiceOn) return;
+  const now = Date.now();
+  if (now - lastVoiceTime < VOICE_COOLDOWN) return;
+  lastVoiceTime = now;
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = lang === 'hi' ? 'hi-IN' :
+             lang === 'te' ? 'te-IN' :
+             lang === 'kn' ? 'kn-IN' :
+             lang === 'ta' ? 'ta-IN' :
+             lang === 'ml' ? 'ml-IN' : 'en-IN';
+  utt.rate = 0.9;
+  speechSynthesis.speak(utt);
+}
+
+function getGrade(score) {
+  if (score >= 80) return 'A';
+  if (score >= 65) return 'B';
+  if (score >= 50) return 'C';
+  return 'D';
+}
+
+function getStopClass(score) {
+  if (score < 50) return 'red';
+  if (score < 70) return 'yellow';
+  return 'green';
+}
+
+function render(data) {
+  const t = T[lang];
+  lastData = data;
+
+  // Apply all translations
+  document.getElementById('tagline').textContent      = t.tagline;
+  document.getElementById('live-txt').textContent     = t.live;
+  document.getElementById('lang-lbl').textContent     = t.langLbl;
+  document.getElementById('quote').textContent        = t.quote;
+  document.getElementById('alert-title').textContent  = t.alertTitle;
+  document.getElementById('alert-sub').textContent    = t.alertSub;
+  document.getElementById('voice-heading').textContent= t.voiceHead;
+  document.getElementById('voice-desc').textContent   = t.voiceDesc;
+  document.getElementById('tab-live').textContent     = t.tabLive;
+  document.getElementById('tab-heatmap').textContent  = t.tabHeatmap;
+  document.getElementById('tab-score').textContent    = t.tabScore;
+  document.getElementById('lbl-people').textContent   = t.people;
+  document.getElementById('lbl-time').textContent     = t.time;
+  document.getElementById('lbl-timesub').textContent  = t.timeSub;
+  document.getElementById('lbl-qstatus').textContent  = t.qStatus;
+  document.getElementById('lbl-sp').textContent       = t.sp;
+  document.getElementById('lbl-nudge').textContent    = t.nudgeLbl;
+  document.getElementById('nudge-sub').innerHTML      = t.nudgeSub;
+  document.getElementById('lbl-rules').textContent    = t.rules;
+  document.getElementById('r-queue').textContent      = t.rQueue;
+  document.getElementById('r-litter').textContent     = t.rLitter;
+  document.getElementById('r-traffic').textContent    = t.rTraffic;
+  document.getElementById('r-elderly').textContent    = t.rElderly;
+  document.getElementById('lbl-info').textContent     = t.info;
+  document.getElementById('lbl-location').textContent = t.location;
+  document.getElementById('hm-title').textContent     = t.hm;
+  document.getElementById('leg-red').textContent      = t.legRed;
+  document.getElementById('leg-yellow').textContent   = t.legYellow;
+  document.getElementById('leg-green').textContent    = t.legGreen;
+  document.getElementById('lbl-score-title').textContent  = t.scoreTitle;
+  document.getElementById('score-desc').textContent   = t.scoreDesc;
+  document.getElementById('score-collective').textContent = t.scoreCollective;
+  document.getElementById('lbl-what-helps').textContent   = t.whatHelps;
+  document.getElementById('sh1').textContent = t.sh1;
+  document.getElementById('sh2').textContent = t.sh2;
+  document.getElementById('sh3').textContent = t.sh3;
+  document.getElementById('sh4').textContent = t.sh4;
+
+  const pc = data.person_count  || 0;
+  const qc = data.queuing_count || 0;
+  const cc = data.chaotic_count || 0;
+  const status = data.status || 'EMPTY';
+
+  // Alert
+  document.getElementById('alert').classList.toggle('show', status === 'CHAOTIC' && pc >= 2);
+
+  // Stats
+  document.getElementById('people-num').textContent   = pc;
+  document.getElementById('people-status').textContent= t.statuses[status] || status;
+  document.getElementById('time-num').textContent     = data.time_saved || 0;
+
+  const qBlock = document.getElementById('queue-block');
+  if (status === 'QUEUE') {
+    qBlock.className = 'stat-block green';
+    document.getElementById('queue-status-num').textContent = '✅';
+    document.getElementById('queue-sub').textContent = t.statuses.QUEUE;
+  } else if (status === 'CHAOTIC') {
+    qBlock.className = 'stat-block red';
+    document.getElementById('queue-status-num').textContent = '❌';
+    document.getElementById('queue-sub').textContent = t.statuses.CHAOTIC;
+  } else {
+    qBlock.className = 'stat-block';
+    document.getElementById('queue-status-num').textContent = '—';
+    document.getElementById('queue-sub').textContent = t.statuses.EMPTY;
+  }
+
+  // Social proof bar
+  const pct = pc > 0 ? Math.round((qc / pc) * 100) : 0;
+  document.getElementById('sp-bar').style.width = pct + '%';
+  document.getElementById('sp-good').textContent = `${qc} ${t.rQueue.toLowerCase()}`;
+  document.getElementById('sp-bad').textContent  = `${cc} not queuing`;
+  document.getElementById('sp-nudge').textContent = t.spNudge(qc, pc);
+
+  // Queue badge
+  const qOk = status === 'QUEUE' || status === 'EMPTY';
+  const bq  = document.getElementById('b-queue');
+  bq.textContent  = qOk ? '✅ OK' : '❌ VIOLATION';
+  bq.className    = 'badge ' + (qOk ? 'b-green' : 'b-red');
+
+  // Date
+  document.getElementById('today-date').textContent = data.date || '—';
+  document.getElementById('timestamp').textContent  = 'Updated ' + new Date().toLocaleTimeString();
+  document.getElementById('ft-time').textContent    = new Date().toLocaleTimeString();
+
+  // Heatmap stops
+  const grid = document.getElementById('stops-grid');
+  grid.innerHTML = '';
+  (data.stops || []).forEach(s => {
+    const cls   = getStopClass(s.score);
+    const lbl   = cls === 'red' ? t.poor : cls === 'yellow' ? t.moderate : t.good;
+    const div   = document.createElement('div');
+    div.className = `stop ${cls}`;
+    div.innerHTML = `<div class="stop-name">${s.name}</div><div class="stop-score">${s.score}</div><div class="stop-lbl">${lbl}</div>`;
+    grid.appendChild(div);
+  });
+
+  // Civic score tab
+  const score = data.civic_score || 60;
+  const grade = getGrade(score);
+  const scoreCol = score >= 70 ? 'var(--green)' : score >= 50 ? 'var(--yellow)' : 'var(--red)';
+  const scoreBig = document.getElementById('score-big');
+  scoreBig.textContent = score.toFixed(1);
+  scoreBig.style.color = scoreCol;
+  document.getElementById('score-grade').textContent = t.grades[grade];
+  document.getElementById('score-grade').style.color = scoreCol;
+
+  // Voice nudge — fires on chaos
+  if (status === 'CHAOTIC' && pc >= 2) {
+    speak(t.voiceMsg(qc, pc));
+  }
+}
+
+function update() {
+  fetch('/data')
+    .then(r => r.json())
+    .then(render)
+    .catch(() => {
+      document.getElementById('ft-time').textContent = 'Waiting for detector...';
+    });
+}
+
+setInterval(update, 1000);
+update();
+</script>
+</body>
+</html>
