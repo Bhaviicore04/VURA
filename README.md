@@ -73,8 +73,8 @@ Supports:
 - English
 - Hindi
 - Telugu
-- Tamil
 - Kannada
+- Tamil
 - Malayalam
 
 ## Civic Score System
