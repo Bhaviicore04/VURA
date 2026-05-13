@@ -25,7 +25,6 @@ def data():
             'date':          datetime.date.today().isoformat(),
             'timestamp':     time.time(),
         })
-
 if __name__ == '__main__':
     print("VURA v3 dashboard → http://localhost:5000")
-    app.run(debug=False, port=5000)
+    app.run(host='0.0.0.0', port=5000)
