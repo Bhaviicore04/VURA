@@ -153,6 +153,11 @@ The project direction, behavioral framework, feature evolution, implementation d
 
 ---
 
+## Deployment link
+   https://vura-5c47.onrender.com
+
+---
+
 # Installation
 
 ## Requirements
@@ -166,5 +171,6 @@ The project direction, behavioral framework, feature evolution, implementation d
 ```bash
 pip install opencv-python ultralytics numpy flask
 
-## Deployment link
-   https://vura-5c47.onrender.com
+---
+
+
