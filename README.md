@@ -112,6 +112,11 @@ Camera Feed → AI Detection → Queue Analysis → Dashboard Update → Voice N
 
 The system continuously monitors crowd behavior and responds in real time.
 
+<img width="1886" height="918" alt="image" src="https://github.com/user-attachments/assets/bfc9e08f-727b-4029-81d4-c9a8cd1120c0" />
+
+<img width="1884" height="806" alt="image" src="https://github.com/user-attachments/assets/adb32ca9-536e-4212-bed8-570511289aa5" />
+
+
 ---
 ## AI Assistance & Development Process
 
@@ -160,3 +165,6 @@ The project direction, behavioral framework, feature evolution, implementation d
 
 ```bash
 pip install opencv-python ultralytics numpy flask
+
+## Deployment link
+   https://vura-5c47.onrender.com
